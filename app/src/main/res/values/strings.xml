@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">StateChangeView</string>
+    <string name="loading">加载中</string>
+    <string name="empty">空数据</string>
+    <string name="error">出错页</string>
+    <string name="success">加载完成</string>
+
+    <string name="status_view_manager_empty">这儿还没有内容</string>
+</resources>
