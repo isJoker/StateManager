@@ -79,7 +79,7 @@ public class StateManagerView extends View {
                 (parent instanceof ScrollingView && parent instanceof NestedScrollingChild) ||
                 (parent instanceof NestedScrollingParent && parent instanceof NestedScrollingChild)) {
             ViewParent viewParent = parent.getParent();
-            if (viewParent == null) {
+            if (viewParent == null) { // 顶层布局
                 // 创建一个 FrameLayout 包裹 StateManagerView 和 parent's childView
                 FrameLayout wrapper = new FrameLayout(parent.getContext());
                 ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
@@ -327,23 +327,6 @@ public class StateManagerView extends View {
         } else {
             throw new IllegalStateException("StateManagerView must have a non-null ViewGroup viewParent");
         }
-    }
-
-    /**
-     * 包裹 view
-     *
-     * @param view 被包裹的view
-     * @return StateManagerView
-     */
-    public static StateManagerView wrap(@NonNull View view) {
-        ViewGroup parent = (ViewGroup) view.getParent();
-        parent.removeView(view);
-        FrameLayout wrap = new FrameLayout(view.getContext());
-        wrap.addView(view);
-        StateManagerView StateManagerView = new StateManagerView(view.getContext());
-        wrap.addView(StateManagerView, view.getLayoutParams());
-        parent.addView(wrap);
-        return StateManagerView;
     }
 
     /**
