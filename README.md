@@ -4,7 +4,7 @@
 ![state_manage](https://github.com/isJoker/StateManager/blob/master/app/gif/state_manage.gif)
 
 
-### 初始
+### 初始化
 ```
 stateManager = StateManager.manage(recyclerView)
                 .setEmptyResource(R.layout.my_empty_layout)
