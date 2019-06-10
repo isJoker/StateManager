@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StateChangeView</string>
+    <string name="app_name">StateManager</string>
     <string name="loading">加载中</string>
     <string name="empty">空数据</string>
     <string name="error">出错页</string>

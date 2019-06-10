@@ -6,12 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import cn.com.state_library.StateManagerView;
-import cn.com.state_library.StateManagerViewType;
+import cn.com.state_library.StateManager;
+import cn.com.state_library.StateManagerType;
 
 public class MainActivity extends AppCompatActivity {
 
-    private StateManagerView stateManagerView;
+    private StateManager stateManager;
 
 
     @Override
@@ -26,19 +26,24 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler);
         recyclerView.setAdapter(new MyAdapter());
 
-        stateManagerView = StateManagerView.manage(recyclerView)
+        stateManager = StateManager.manage(recyclerView)
                 .setEmptyResource(R.layout.my_empty_layout)
-                .setOnErrorClickListener(new StateManagerView.OnErrorClickListener() {
+                .setOnErrorClickListener(new StateManager.OnErrorClickListener() {
                     @Override
                     public void onErrorClick() {
-                        stateManagerView.showLoading();
+                        stateManager.showLoading();
+                        // TODO: 2019-06-10 retry to load data
                     }
-                }).setOnInflateListener(new StateManagerView.OnInflateListener() {
+                }).setOnInflateListener(new StateManager.OnInflateListener() {
                     @Override
                     public void onInflate(int viewType, View view) {
-                        if (viewType == StateManagerViewType.EMPTY) {
+                        if (viewType == StateManagerType.EMPTY) {
                             TextView tvStatusEmptyContent = view.findViewById(R.id.tv_status_empty_content);
                             tvStatusEmptyContent.setText("这里空空如也~");
+                        } else if (viewType == StateManagerType.ERROR) {
+                            // TODO: 2019-06-10 错误页面UI处理
+                        } else if (viewType == StateManagerType.LOADING) {
+                            // TODO: 2019-06-10
                         }
                     }
                 });
@@ -47,25 +52,25 @@ public class MainActivity extends AppCompatActivity {
         tvLoading.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stateManagerView.showLoading();
+                stateManager.showLoading();
             }
         });
         tvEmpty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stateManagerView.showEmpty();
+                stateManager.showEmpty();
             }
         });
         tvError.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stateManagerView.showError();
+                stateManager.showError();
             }
         });
         tvNormal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stateManagerView.showContent();
+                stateManager.showContent();
             }
         });
     }

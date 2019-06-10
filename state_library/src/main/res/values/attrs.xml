@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="StateManagerView">
+    <declare-styleable name="StateManager">
         <attr name="emptyResource" format="reference" />
         <attr name="errorResource" format="reference" />
         <attr name="loadingResource" format="reference" />

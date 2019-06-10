@@ -27,7 +27,7 @@ import android.widget.ScrollView;
  * Created by JokerWan on 2019-06-04.
  * Function: EMPTY/ERROR/LOADING/显示内容 四种状态控制
  */
-public class StateManagerView extends View {
+public class StateManager extends View {
 
     private int mEmptyResource;
     private int mErrorResource;
@@ -40,21 +40,21 @@ public class StateManagerView extends View {
     private OnErrorClickListener mErrorClickListener;
     private OnInflateListener mInflateListener;
 
-    public StateManagerView(Context context) {
+    public StateManager(Context context) {
         this(context, null);
     }
 
-    public StateManagerView(Context context, @Nullable AttributeSet attrs) {
+    public StateManager(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public StateManagerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public StateManager(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StateManagerView);
-        mEmptyResource = a.getResourceId(R.styleable.StateManagerView_emptyResource, 0);
-        mErrorResource = a.getResourceId(R.styleable.StateManagerView_errorResource, 0);
-        mLoadingResource = a.getResourceId(R.styleable.StateManagerView_loadingResource, 0);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StateManager);
+        mEmptyResource = a.getResourceId(R.styleable.StateManager_emptyResource, 0);
+        mErrorResource = a.getResourceId(R.styleable.StateManager_errorResource, 0);
+        mLoadingResource = a.getResourceId(R.styleable.StateManager_loadingResource, 0);
         a.recycle();
 
         if (mEmptyResource == 0) {
@@ -71,7 +71,7 @@ public class StateManagerView extends View {
         setWillNotDraw(true);
     }
 
-    private static StateManagerView build(ViewGroup parent) {
+    private static StateManager build(ViewGroup parent) {
         int screenHeight = 0;
         if (parent instanceof LinearLayout ||
                 parent instanceof ScrollView ||
@@ -154,7 +154,7 @@ public class StateManagerView extends View {
                 parent = root;
             }
         }
-        StateManagerView StateManagerView = new StateManagerView(parent.getContext());
+        StateManager StateManagerView = new StateManager(parent.getContext());
         if (screenHeight > 0) {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, screenHeight);
@@ -241,7 +241,7 @@ public class StateManagerView extends View {
 
     public void showEmpty() {
         if (mEmptyView == null) {
-            mEmptyView = inflate(mEmptyResource, StateManagerViewType.EMPTY);
+            mEmptyView = inflate(mEmptyResource, StateManagerType.EMPTY);
         }
 
         showView(mEmptyView);
@@ -249,7 +249,7 @@ public class StateManagerView extends View {
 
     public void showError() {
         if (mErrorView == null) {
-            mErrorView = inflate(mErrorResource, StateManagerViewType.ERROR);
+            mErrorView = inflate(mErrorResource, StateManagerType.ERROR);
             mErrorView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -266,7 +266,7 @@ public class StateManagerView extends View {
 
     public void showLoading() {
         if (mLoadingView == null) {
-            mLoadingView = inflate(mLoadingResource, StateManagerViewType.LOADING);
+            mLoadingView = inflate(mLoadingResource, StateManagerType.LOADING);
         }
 
         showView(mLoadingView);
@@ -290,7 +290,7 @@ public class StateManagerView extends View {
         }
     }
 
-    private View inflate(@LayoutRes int layoutResource, @StateManagerViewType int viewType) {
+    private View inflate(@LayoutRes int layoutResource, @StateManagerType int viewType) {
         final ViewParent viewParent = getParent();
 
         if (viewParent instanceof ViewGroup) {
@@ -335,7 +335,7 @@ public class StateManagerView extends View {
      * @param view 要管理的View
      * @return StateManagerView
      */
-    public static StateManagerView manage(@NonNull View view) {
+    public static StateManager manage(@NonNull View view) {
         if (view instanceof ViewGroup) {
             ViewGroup parent = (ViewGroup) view;
             return build(parent);
@@ -354,7 +354,7 @@ public class StateManagerView extends View {
      *
      * @param emptyResource emptyView 的 layoutResource
      */
-    public StateManagerView setEmptyResource(@LayoutRes int emptyResource) {
+    public StateManager setEmptyResource(@LayoutRes int emptyResource) {
         this.mEmptyResource = emptyResource;
         return this;
     }
@@ -364,7 +364,7 @@ public class StateManagerView extends View {
      *
      * @param errorResource errorView 的 layoutResource
      */
-    public StateManagerView setErrorResource(@LayoutRes int errorResource) {
+    public StateManager setErrorResource(@LayoutRes int errorResource) {
         this.mErrorResource = errorResource;
         return this;
     }
@@ -374,13 +374,13 @@ public class StateManagerView extends View {
      *
      * @param loadingResource loadingView 的 layoutResource
      */
-    public StateManagerView setLoadingResource(@LayoutRes int loadingResource) {
+    public StateManager setLoadingResource(@LayoutRes int loadingResource) {
         mLoadingResource = loadingResource;
         return this;
     }
 
 
-    public StateManagerView setOnErrorClickListener(OnErrorClickListener listener) {
+    public StateManager setOnErrorClickListener(OnErrorClickListener listener) {
         this.mErrorClickListener = listener;
         return this;
     }
@@ -394,12 +394,12 @@ public class StateManagerView extends View {
      *
      * @param inflateListener inflateListener
      */
-    public StateManagerView setOnInflateListener(OnInflateListener inflateListener) {
+    public StateManager setOnInflateListener(OnInflateListener inflateListener) {
         mInflateListener = inflateListener;
         return this;
     }
 
     public interface OnInflateListener {
-        void onInflate(@StateManagerViewType int viewType, View view);
+        void onInflate(@StateManagerType int viewType, View view);
     }
 }

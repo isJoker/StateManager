@@ -9,11 +9,11 @@ import java.lang.annotation.RetentionPolicy;
  * Created by JokerWan on 2019-06-04.
  * Function: 区分三种视图
  */
-@IntDef({StateManagerViewType.EMPTY,
-        StateManagerViewType.ERROR,
-        StateManagerViewType.LOADING})
+@IntDef({StateManagerType.EMPTY,
+        StateManagerType.ERROR,
+        StateManagerType.LOADING})
 @Retention(RetentionPolicy.SOURCE)
-public @interface StateManagerViewType {
+public @interface StateManagerType {
     int EMPTY = 0x000000;
     int ERROR = 0x000001;
     int LOADING = 0x000002;
