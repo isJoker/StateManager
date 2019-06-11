@@ -8,21 +8,13 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.view.NestedScrollingParent;
-import android.support.v4.view.ScrollingView;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 /**
  * Created by JokerWan on 2019-06-04.
@@ -70,103 +62,6 @@ public class StateManager extends View {
 
         setVisibility(GONE);
         setWillNotDraw(true);
-    }
-
-    private static StateManager build(ViewGroup parent) {
-        int screenHeight = 0;
-        if (parent instanceof LinearLayout ||
-                parent instanceof ScrollView ||
-                parent instanceof AdapterView ||
-                (parent instanceof ScrollingView && parent instanceof NestedScrollingChild) ||
-                (parent instanceof NestedScrollingParent && parent instanceof NestedScrollingChild)) {
-            ViewParent viewParent = parent.getParent();
-            Log.d("wjc", "viewParent == null----->" + (viewParent == null));
-            if (viewParent == null) { // 顶层布局
-                // 创建一个 FrameLayout 包裹 StateManagerView 和 parent's childView
-                FrameLayout wrapper = new FrameLayout(parent.getContext());
-                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                wrapper.setLayoutParams(layoutParams);
-
-                if (parent instanceof LinearLayout) {
-                    // 创建一个 LinearLayout 包裹 parent's childView
-                    LinearLayout wrapLayout = new LinearLayout(parent.getContext());
-                    wrapLayout.setLayoutParams(parent.getLayoutParams());
-                    wrapLayout.setOrientation(((LinearLayout) parent).getOrientation());
-
-                    for (int i = 0, childCount = parent.getChildCount(); i < childCount; i++) {
-                        View childView = parent.getChildAt(0);
-                        parent.removeView(childView);
-                        wrapLayout.addView(childView);
-                    }
-                    wrapper.addView(wrapLayout);
-                } else if (parent instanceof ScrollView || parent instanceof ScrollingView) {
-                    if (parent.getChildCount() != 1) {
-                        throw new IllegalStateException("the ScrollView does not have one direct child");
-                    }
-                    View directView = parent.getChildAt(0);
-                    parent.removeView(directView);
-                    wrapper.addView(directView);
-
-                    WindowManager wm = (WindowManager) parent.getContext()
-                            .getSystemService(Context.WINDOW_SERVICE);
-                    DisplayMetrics metrics = new DisplayMetrics();
-                    if (wm != null) {
-                        wm.getDefaultDisplay().getMetrics(metrics);
-                    }
-                    screenHeight = metrics.heightPixels;
-                } else if (parent instanceof NestedScrollingParent &&
-                        parent instanceof NestedScrollingChild) {
-                    if (parent.getChildCount() == 2) {
-                        View targetView = parent.getChildAt(1);
-                        parent.removeView(targetView);
-                        wrapper.addView(targetView);
-                    } else if (parent.getChildCount() > 2) {
-                        throw new IllegalStateException("the view is not refresh layout? view = "
-                                + parent.toString());
-                    }
-                } else {
-                    throw new IllegalStateException("the view does not have parent, view = "
-                            + parent.toString());
-                }
-
-                // 将wrapper添加到parent
-                parent.addView(wrapper);
-                parent = wrapper;
-            } else {
-                FrameLayout root = new FrameLayout(parent.getContext());
-                root.setLayoutParams(parent.getLayoutParams());
-
-                if (viewParent instanceof ViewGroup) {
-                    ViewGroup rootGroup = (ViewGroup) viewParent;
-                    // 把 parent 从它自己的父容器中移除
-                    rootGroup.removeView(parent);
-                    // 然后替换成新的
-                    rootGroup.addView(root);
-
-                    if (rootGroup instanceof ConstraintLayout) {
-                        changeChildrenConstraints(rootGroup, root, parent.getId());
-                    }
-                }
-
-                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                parent.setLayoutParams(layoutParams);
-                root.addView(parent);
-                parent = root;
-            }
-        }
-        StateManager StateManagerView = new StateManager(parent.getContext());
-        if (screenHeight > 0) {
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, screenHeight);
-            parent.addView(StateManagerView, params);
-        } else {
-            parent.addView(StateManagerView);
-        }
-        StateManagerView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        StateManagerView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-        return StateManagerView;
     }
 
     public static void changeChildrenConstraints(ViewGroup viewParent, FrameLayout root, int injectViewId) {
@@ -324,56 +219,46 @@ public class StateManager extends View {
 
                 return view;
             } else {
-                throw new IllegalArgumentException("StateManagerView must have a valid layoutResource");
+                throw new IllegalArgumentException("StateManager must have a valid layoutResource");
             }
         } else {
-            throw new IllegalStateException("StateManagerView must have a non-null ViewGroup viewParent");
+            throw new IllegalStateException("StateManager must have a non-null ViewGroup viewParent");
         }
     }
 
-    /**
-     * 管理view
-     *
-     * @param view 要管理的View，ViewGroup或者作为跟布局的非ViewGroup的View
-     * @return StateManagerView
-     */
-    public static StateManager inject(@NonNull View view) {
-        if (view instanceof ViewGroup) {
-            ViewGroup parent = (ViewGroup) view;
-            return build(parent);
-        } else {
-            ViewParent parent = view.getParent();
-            if (parent instanceof ViewGroup) {
-                return build((ViewGroup) parent);
-            } else {
-                throw new ClassCastException("view or view.getParent() must be ViewGroup");
-            }
-        }
-    }
 
     /**
      * 包裹 view
      *
-     * @param view 被包裹的view
+     * @param view 被包裹的view，只能为非跟布局的View
      */
     public static StateManager wrap(@NonNull View view) {
-        ViewGroup parent = (ViewGroup) view.getParent();
-        int index = parent.indexOfChild(view);
-        parent.removeView(view);
         FrameLayout wrap = new FrameLayout(view.getContext());
         wrap.setLayoutParams(view.getLayoutParams());
-        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        wrap.addView(view);
+
         StateManager stateView = new StateManager(view.getContext());
         stateView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        wrap.addView(stateView);
-        if (parent instanceof ConstraintLayout) {
-            parent.addView(wrap);
-            changeChildrenConstraints(parent, wrap, view.getId());
-        } else if(parent instanceof LinearLayout) {
-            parent.addView(wrap, index);
+
+        ViewParent parent = view.getParent();
+        if (parent instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) parent;
+            int index = viewGroup.indexOfChild(view);
+            viewGroup.removeView(view);
+
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            wrap.addView(view);
+            wrap.addView(stateView);
+
+            if (viewGroup instanceof ConstraintLayout) {
+                viewGroup.addView(wrap);
+                changeChildrenConstraints(viewGroup, wrap, view.getId());
+            } else if (viewGroup instanceof LinearLayout) {
+                viewGroup.addView(wrap, index);
+            } else {
+                viewGroup.addView(wrap);
+            }
         } else {
-            parent.addView(wrap);
+            throw new ClassCastException("view or view.getParent() must be ViewGroup");
         }
         return stateView;
     }

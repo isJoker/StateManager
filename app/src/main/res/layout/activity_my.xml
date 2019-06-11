@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".inject.MyActivity">
+    tools:context=".inject.MyActivity"
+    android:id="@+id/ll_content">
 
     <LinearLayout
         android:id="@+id/ll_top"
@@ -62,6 +63,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
+        android:layout_weight="1"
         android:layout_height="0dp"
         android:gravity="center"
         android:orientation="vertical"
@@ -70,4 +72,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_top" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

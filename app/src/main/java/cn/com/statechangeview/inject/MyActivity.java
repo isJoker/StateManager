@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import cn.com.state_library.StateManager;
@@ -24,9 +25,10 @@ public class MyActivity extends AppCompatActivity {
         TextView tvError = findViewById(R.id.tv_error);
         TextView tvNormal = findViewById(R.id.tv_normal);
         RecyclerView recyclerView = findViewById(R.id.recycler);
+        LinearLayout llContent = findViewById(R.id.ll_content);
         recyclerView.setAdapter(new MyAdapter());
 
-        stateManager = StateManager.inject(recyclerView)
+        stateManager = StateManager.wrap(recyclerView)
                 .setEmptyResource(R.layout.my_empty_layout)
                 .setOnErrorClickListener(new StateManager.OnErrorClickListener() {
                     @Override
