@@ -1,10 +1,12 @@
-package cn.com.statechangeview;
+package cn.com.statechangeview.inject;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import cn.com.statechangeview.R;
 
 /**
  * Created by JokerWan on 2019-06-04.
