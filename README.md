@@ -3,10 +3,12 @@
 ### 效果图如下
 ![state_manage](https://github.com/isJoker/StateManager/blob/master/app/gif/state_manage.gif)
 
+![state_manage](https://github.com/isJoker/StateManager/blob/master/app/gif/state_manage_wrap.gif)
+
 
 ### 初始化
 ```
-stateManager = StateManager.manage(recyclerView)
+stateManager = StateManager.wrap(recyclerView)
                 .setEmptyResource(R.layout.my_empty_layout)
                 .setOnErrorClickListener(new StateManager.OnErrorClickListener() {
                     @Override
@@ -112,7 +114,7 @@ public class RecordDetailFragment extends SBBaseFragment {
     }
 
     private void initStatusView() {
-        stateManager = StateManager.manage(mBinding.recyclerView)
+        stateManager = StateManager.wrap(mBinding.recyclerView)
                 .setEmptyResource(R.layout.record_layout_empty)
                 .setErrorResource(R.layout.record_layout_error)
                 .setLoadingResource(R.layout.record_layout_loading)
