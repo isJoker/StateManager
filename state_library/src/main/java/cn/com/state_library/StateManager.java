@@ -230,7 +230,7 @@ public class StateManager extends View {
     /**
      * 包裹 view
      *
-     * @param view 被包裹的view，只能为非跟布局的View
+     * @param view 被包裹的view
      */
     public static StateManager wrap(@NonNull View view) {
         FrameLayout wrap = new FrameLayout(view.getContext());
