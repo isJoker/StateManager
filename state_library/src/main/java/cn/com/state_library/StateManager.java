@@ -64,7 +64,7 @@ public class StateManager extends View {
         setWillNotDraw(true);
     }
 
-    public static void changeChildrenConstraints(ViewGroup viewParent, FrameLayout root, int injectViewId) {
+    private static void changeChildrenConstraints(ViewGroup viewParent, FrameLayout root, int injectViewId) {
         int rootId = R.id.root_id;
         root.setId(rootId);
         ConstraintLayout rootGroup = ((ConstraintLayout) viewParent);
@@ -209,6 +209,7 @@ public class StateManager extends View {
                     parent.addView(view, index);
                 }
 
+                // 每个布局渲染都要使用到getParent() 和 getLayoutParams() ，所以必须等三个视图都添加进去后才能remove掉占位视图
                 if (mLoadingView != null && mErrorView != null && mEmptyView != null) {
                     parent.removeViewInLayout(this);
                 }
@@ -237,6 +238,7 @@ public class StateManager extends View {
         wrap.setLayoutParams(view.getLayoutParams());
 
         StateManager stateView = new StateManager(view.getContext());
+        // TODO: 2019-06-12
         stateView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         ViewParent parent = view.getParent();

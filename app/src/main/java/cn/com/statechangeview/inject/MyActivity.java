@@ -30,6 +30,8 @@ public class MyActivity extends AppCompatActivity {
 
         stateManager = StateManager.wrap(recyclerView)
                 .setEmptyResource(R.layout.my_empty_layout)
+//                .setErrorResource()
+//                .setLoadingResource()
                 .setOnErrorClickListener(new StateManager.OnErrorClickListener() {
                     @Override
                     public void onErrorClick() {
