@@ -5,6 +5,8 @@
 
 ![state_manage](https://github.com/isJoker/StateManager/blob/master/app/gif/state_manage_wrap.gif)
 
+### 原理图如下
+![state_manage](https://github.com/isJoker/StateManager/blob/master/app/gif/state_manager_wrap.png)
 
 ### 初始化
 ```
