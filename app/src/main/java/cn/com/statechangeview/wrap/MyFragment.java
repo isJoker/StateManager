@@ -40,7 +40,7 @@ public class MyFragment extends Fragment {
         TextView tvContent = inflate.findViewById(R.id.tv_content);
         TextView tvBottom = inflate.findViewById(R.id.tv_bottom);
 
-        stateManager = StateManager.wrap(tvBottom)
+        stateManager = StateManager.wrap(tvContent)
                 .setEmptyResource(R.layout.my_empty_layout)
                 .setOnErrorClickListener(new StateManager.OnErrorClickListener() {
                     @Override
